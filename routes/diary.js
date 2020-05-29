@@ -1,17 +1,26 @@
 const express = require('express');
 const Module = require('../controller/module');
+const Diary = require('../controller/diary');
 const { userId } = require('../config');
 const { handleRespondData } = require('../utils');
 const { ControllerType } = require('../constant');
 
 const router = express.Router();
 
-router.get('/fetchDiaryList', (req, res, next) => {
-  res.send('respond with a resource');
+router.get('/fetchDiaryList', (req, res) => {
+  Diary.handleFetchDiary({ userId })
+    .then(data => {
+      const result = {
+        list: data,
+        pagination: {},
+        customsColumns: [],
+      };
+      res.send(handleRespondData(result));
+    });
 });
 
-router.get('/fetchModuleList', (req, res, next) => {
-  Module.handleFetchModule(userId, ['id', 'name'])
+router.get('/fetchModuleList', (req, res) => {
+  Module.handleFetchModule({ userId }, ['_id', 'name'])
     .then(data => {
       res.send(handleRespondData(data));
     });

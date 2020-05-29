@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
 const { isArray } = require('lodash');
-const moment = require('moment');
 const Module = require('../models/module');
 const { user } = require('../config');
 
@@ -11,6 +9,14 @@ async function handleFetchModule(params, filterFields) {
       const result = {};
       filterFields.forEach(field => {
         result[field] = item[field];
+      });
+      result.children = item.children.map(childItem => {
+        const childResult = {};
+        filterFields.forEach(field => {
+          childResult[field] = childItem[field];
+        });
+
+        return childResult;
       });
       return result;
     });

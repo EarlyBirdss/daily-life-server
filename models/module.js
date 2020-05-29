@@ -4,9 +4,9 @@ const ModuleSchema = require('../schemas/module');
 const Module = mongoose.model('Module', ModuleSchema);
 
 function getModuleList({ userId }) {
-  return Module.find({ userId }, (err, docs) => {
+  return Module.find({ userId }, (err, modules) => {
     // util handle Error
-    return new Promise(resolve => resolve(docs), reject => reject(null));
+    return new Promise(resolve => resolve(modules), reject => reject(null));
   });
 }
 

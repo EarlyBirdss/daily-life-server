@@ -14,12 +14,12 @@ const ModuleSchema = new Schema({
   createAt: Date,
   modifyAt: Date,
   children: Array,
-}, { id: true });
-
-// 输出id而不是_id
-ModuleSchema.virtual('id').get(() => this._id);
-ModuleSchema.set('toJSON', {
-  virtuals: true
+}, {
+  toJSON: { virtuals: true }
 });
+
+// TODO: 输出id
+// ModuleSchema.virtual('id').get(() => this._id);
+// ModuleSchema.virtual('test').get(() => 'test');
 
 module.exports = ModuleSchema;

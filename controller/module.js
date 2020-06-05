@@ -54,10 +54,34 @@ async function handleDeleteModule({ id, parentId }) {
   }
 }
 
-async function handleFetchModuleDetail(id) {
-  const modules = await Module.findModule({ _id: id });
-  return modules.length ? modules[0] : {};
+async function handleFetchModuleDetail(id, parentId) {
+  const modules = await Module.findModule({ _id: parentId || id });
+  const module = modules.length ? modules[0] : {};
+
+  if ( parentId ) {
+    return module.children ? module.children.find(({ _id }) => _id.toString() === id) || {} : {};
+  }
+  return module;
 }
+
+async function handleFetchTodoList({ userId }, filterFields) {
+  const modules = await Module.findModule({ controllerType: 'TODOLIST', userId });
+  const todoList = modules.length ? modules[0].children : [];
+
+  if (isArray(filterFields)) {
+    return todoList.map(item => {
+      const result = {};
+      filterFields.forEach(field => {
+        result[field] = item[field];
+      });
+      return result;
+    });
+  }
+
+  return todoList;
+}
+
+
 
 module.exports = {
   handleFetchModule,
@@ -65,4 +89,5 @@ module.exports = {
   hasName,
   handleDeleteModule,
   handleFetchModuleDetail,
+  handleFetchTodoList,
 };

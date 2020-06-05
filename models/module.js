@@ -26,10 +26,10 @@ function updateModule({ id, ...data }) {
 function updateSubModule({ id, ...data }) {
   return Module.findById(id, (err, module) => {
     const { children } = module;
-    const { subId, content } = data;
+    const { subId, ...content } = data;
     if (subId !== undefined && subId !== null) {
       // 更新
-      const index = children.findIndex(({ id }) => subId === id);
+      const index = children.findIndex(({ _id }) => subId === _id.toString());
       Object.assign(children[index], { modifyAt: new Date(), ...content });
     } else {
       // 新增

@@ -38,6 +38,13 @@ router.get('/fetchModulesById', (req, res, next) => {
   res.send('respond with a resource');
 });
 
+router.get('/fetchTodoList', (req, res, next) => {
+  Module.handleFetchTodoList({ userId }, ['_id', 'name'])
+    .then(data => {
+      res.send(handleRespondData(data));
+    });
+});
+
 router.get('/fetchConfig', (req, res, next) => {
   res.send('respond with a resource');
 });
@@ -54,8 +61,8 @@ router.get('/fetchModule', (req, res, next) => {
 });
 
 router.get('/fetchModuleDetail', (req, res) => {
-  const { query: { id } } = req;
-  Module.handleFetchModuleDetail(id)
+  const { query: { id, parentId } } = req;
+  Module.handleFetchModuleDetail(id, parentId)
     .then(data => {
       res.send(handleRespondData(data));
     });

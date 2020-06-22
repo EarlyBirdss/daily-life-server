@@ -9,15 +9,19 @@ const DiarySchema = new Schema({
   createAt: Date,
   modifyAt: Date,
   grade: { type: Number, min: 0, max: 100 },
-  completedModules: [String],
+  // completedModules: [String],
   // modules: [Object],
-  modules: [{
-    id: Schema.Types.ObjectId,
-  }],
+  // modules: [{
+  //   id: Schema.Types.ObjectId,
+  // }],
+  todoList: [],
+  modules: [],
+  remark: String,
   isDeleted: Boolean,
 }, {
-  safe: true,
-  autoIndex: true
+  // safe: true,
+  // autoIndex: true,
+  toJSON: { virtuals: true },
 });
 
 DiarySchema.methods = {
@@ -34,5 +38,19 @@ DiarySchema.methods = {
     });
   },
 };
+
+DiarySchema.virtual('completedModules').get(() => {
+  const modules = this.modules || [];
+  return modules.reduce((a, b) => a.concat(b.children || b), [])
+    .filter(module => module.content);
+});
+
+// DiarySchema.virtual('id').get(() => {
+//   const modules = this.modules || [];
+//   console.log(this, this._id);
+
+//   return modules.reduce((a, b) => a.concat(b.children || b), [])
+//     .filter(module => module.content);
+// });
 
 module.exports = DiarySchema;

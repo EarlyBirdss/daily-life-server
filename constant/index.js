@@ -3,4 +3,6 @@ exports.ControllerType = {
   TEXTAREA: 'TEXTAREA',
   EDITOR: 'EDITOR',
   NONE: 'NONE',
+  CHECKBOX: 'CHECKBOX',
+  TODOLIST: 'TODOLIST',
 }

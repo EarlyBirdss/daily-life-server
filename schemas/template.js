@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const TemplateSchema = new Schema({
   id: Schema.Types.ObjectId,
-  userId: Number,
+  userId: String,
   sortId: Number,
   name: { type: String, default: '', trim: true, maxlength: 20 },
   description: { type: String, default: '', trim: true, maxlength: 400 },

@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const ModuleSchema = new Schema({
   // id: Schema.Types.ObjectId,
-  userId: Number,
+  userId: String,
   userName: String,
   parentId: String, // 仅限子模块
   name: { type: String, default: '', trim: true, maxlength: 20 },

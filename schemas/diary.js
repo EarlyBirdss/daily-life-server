@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const DiarySchema = new Schema({
   id: Schema.Types.ObjectId,
-  userId: Number,
+  userId: String,
   sortId: Number,
   date: { type: Date, required: true },
   createAt: Date,

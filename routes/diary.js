@@ -2,6 +2,7 @@ const express = require('express');
 const Module = require('../controller/module');
 const Diary = require('../controller/diary');
 const Template = require('../controller/template');
+const DiaryLog = require('../controller/diaryLog');
 const { userId } = require('../config');
 const { handleRespondData } = require('../utils');
 const { ControllerType } = require('../constant');
@@ -33,9 +34,17 @@ router.post('/saveDiary', (req, res) => {
   const { remark, ...content } = req.body;
   Diary.hanleSubmitDiary({ userId, ...content })
     .then(data => {
-      res.send(handleRespondData(data));
+      console.log(remark, userId, data._id, remark)
+      if (remark !== undefined && remark !== null) {
+      // 更新修改记录 log
+      DiaryLog.handleCreateDiaryLog({ userId, diaryId: data._id, remark })
+        .then(() => {
+          res.send(handleRespondData(data));
+        });
+      } else {
+        res.send(handleRespondData(data));
+      }
     });
-    // 更新修改记录 log
 });
 
 router.post('/markGrade', (req, res) => {
@@ -50,7 +59,11 @@ router.delete('/deleteDiary', (req, res) => {
   const { _id } = req.body;
   Diary.handleDeleteDiary(_id)
     .then(data => {
-      res.send(handleRespondData(data));
+      // 删除修改记录
+      DiaryLog.handleDeleteDiaryLog(_id)
+        .then(() => {
+          res.send(handleRespondData(data));
+        });
     });
 });
 
@@ -84,11 +97,15 @@ router.get('/fetchConfig', (req, res, next) => {
   res.send('respond with a resource');
 });
 
-router.get('/fetchLogList', (req, res, next) => {
-  res.send('respond with a resource');
+router.get('/fetchLogList', (req, res) => {
+  const { _id } = req.query;
+  DiaryLog.handleFetchDiaryLog(_id)
+    .then(data => {
+      res.send(handleRespondData(data));
+    });
 });
 
-router.get('/fetchModule', (req, res, next) => {
+router.get('/fetchModule', (req, res) => {
   Module.handleFetchModule({ userId })
     .then(data => {
       res.send(handleRespondData(data));

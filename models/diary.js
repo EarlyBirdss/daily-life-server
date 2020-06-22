@@ -14,7 +14,7 @@ function getDiaries({ userId }) {
 function createDiary(data) {
   const diary = new Diary(data);
   return diary.save(err => {
-    return new Promise(resolve => resolve(data));
+    return new Promise(resolve => resolve(diary));
   });
 }
 

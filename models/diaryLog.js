@@ -4,6 +4,7 @@ const DiaryLogSchema = require('../schemas/diaryLog');
 const DiaryLog = mongoose.model('DiaryLog', DiaryLogSchema);
 
 function createLog(params) {
+  console.log('createLog', params)
   const log = new DiaryLog(params);
   return log.save((err, diaryLog) => {
     new Promise(resolve => resolve(diaryLog));
@@ -11,7 +12,7 @@ function createLog(params) {
 }
 
 function fetchDiaryLogList(query) {
-  return DiaryLog.find(query, (err, diaryLogs) => {
+  return DiaryLog.find({}, (err, diaryLogs) => {
     return new Promise(resolve => resolve(diaryLogs));
   });
 }

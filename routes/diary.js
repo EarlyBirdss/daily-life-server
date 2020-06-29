@@ -10,13 +10,27 @@ const { ControllerType } = require('../constant');
 const router = express.Router();
 
 router.get('/fetchDiaryList', (req, res) => {
-  Diary.handleFetchDiaries({ userId })
+  let { modules = "[]", childModules = "[]", dateRange } = req.query;
+  modules = modules ? JSON.parse(modules) : [];
+  childModules = childModules ? JSON.parse(childModules) : [];
+  const children = childModules.map(({ key, label }) => {
+    const [childId, id] = key.split('__');
+    const module = modules.find(({ key }) => key === id) || {};
+    return {
+      key,
+      id: childId,
+      parentId: id,
+      label: `${module.label || ''}-${label}`
+    }
+  });
+  const parents = modules.filter(({ key }) => !children.find(({ parentId }) => parentId === key));
+
+  Diary.handleFetchDiaries({ userId, dateRange })
     .then(data => {
       const result = {
         list: data,
-        // list: [],
         pagination: {},
-        customsColumns: [],
+        customsColumns: [...parents, ...children],
       };
       res.send(handleRespondData(result));
     });
@@ -34,7 +48,6 @@ router.post('/saveDiary', (req, res) => {
   const { remark, ...content } = req.body;
   Diary.hanleSubmitDiary({ userId, ...content })
     .then(data => {
-      console.log(remark, userId, data._id, remark)
       if (remark !== undefined && remark !== null) {
       // 更新修改记录 log
       DiaryLog.handleCreateDiaryLog({ userId, diaryId: data._id, remark })
@@ -74,27 +87,11 @@ router.get('/fetchModuleList', (req, res) => {
     });
 });
 
-router.get('/fetchDetail', (req, res, next) => {
-  res.send('respond with a resource');
-});
-
-router.get('/fetchTemplateContent', (req, res, next) => {
-  res.send('respond with a resource');
-});
-
-router.get('/fetchModulesById', (req, res, next) => {
-  res.send('respond with a resource');
-});
-
 router.get('/fetchTodoList', (req, res, next) => {
   Module.handleFetchTodoList({ userId }, ['_id', 'name'])
     .then(data => {
       res.send(handleRespondData(data));
     });
-});
-
-router.get('/fetchConfig', (req, res, next) => {
-  res.send('respond with a resource');
 });
 
 router.get('/fetchLogList', (req, res) => {

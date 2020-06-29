@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 
 const config = require('./config');
 const diary = require('./routes/diary');
+const user = require('./routes/user');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/diary', diary);
+app.use('/user', user);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + 'index.html');

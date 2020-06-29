@@ -31,7 +31,7 @@ async function handleSaveModule({ _id, parentId, ...data}) {
     return await Module.updateSubModule({ _id: parentId, subId: _id, ...data });
   } else {
     // 新增或更新模块
-    if (_id !== undefined && id !== null) {
+    if (_id !== undefined && _id !== null) {
       return await Module.updateModule({ _id, ...data, modifyAt: new Date() });
     } else {
       return await Module.createModule({ ...data, createAt: new Date(), userId, userName });

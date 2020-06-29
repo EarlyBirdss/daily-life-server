@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const DiarySchema = new Schema({
   id: Schema.Types.ObjectId,
-  userId: String,
+  userId: Number,
   sortId: Number,
   date: { type: Date, required: true },
   createAt: Date,
@@ -39,18 +39,11 @@ DiarySchema.methods = {
   },
 };
 
-DiarySchema.virtual('completedModules').get(() => {
+DiarySchema.virtual('completedModules').get(function() {
   const modules = this.modules || [];
   return modules.reduce((a, b) => a.concat(b.children || b), [])
-    .filter(module => module.content);
+    .filter(module => module.content)
+    .map(item => item.name);
 });
-
-// DiarySchema.virtual('id').get(() => {
-//   const modules = this.modules || [];
-//   console.log(this, this._id);
-
-//   return modules.reduce((a, b) => a.concat(b.children || b), [])
-//     .filter(module => module.content);
-// });
 
 module.exports = DiarySchema;

@@ -4,6 +4,7 @@ async function handleCreateDiaryLog({ userId, ...params }) {
   if (userId === undefined || userId === null) {
     return new Error('Params Error: miss "userId"');
   }
+  console.log('handleCreateDiaryLog', { ...params, userId, modifyAt: new Date()})
   return await DiaryLog.createLog({ ...params, userId, modifyAt: new Date()});
 }
 

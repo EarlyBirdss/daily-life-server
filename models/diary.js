@@ -1,20 +1,28 @@
 const mongoose = require('mongoose');
 const DiarySchema = require('../schemas/diary');
+const lodash = require('lodash');
 
 const Diary = mongoose.model('Diary', DiarySchema);
 
-function getDiaries({ userId }) {
+function getDiaries({ userId, dateRange }) {
+  let query = { userId };
+  if (lodash.isArray(dateRange)) {
+    const dateQuery = {date: { $gte: dateRange[0], $lte: dateRange[1] }};
+    query = {...query, ...dateQuery};
+  }
 
-  return Diary.find({ userId }, (err, diaries) => {
+  return Diary.find(query, (err, diaries) => {
     // util handle Error
     return new Promise(resolve => resolve(diaries), reject => reject([]));
   });
 }
 
 function createDiary(data) {
-  const diary = new Diary(data);
-  return diary.save(err => {
-    return new Promise(resolve => resolve(diary));
+  return new Promise(resolve => {
+    const diary = new Diary(data);
+    diary.save(err => {
+      resolve(diary);
+    });
   });
 }
 
@@ -31,8 +39,10 @@ function findDiary(query) {
 }
 
 function deleteDiary(_id) {
-  return Diary.findByIdAndDelete(_id, {}, err => {
-    return new Promise(resolve => resolve(_id));
+  return Diary.findByIdAndDelete(_id).then(() => {
+    return new Promise(resolve => {
+      resolve({ _id });
+    });
   });
 }
 

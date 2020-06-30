@@ -1,7 +1,7 @@
 const Diary = require('../models/diary');
 
-async function handleFetchDiaries({ userId, dateRange }) {
-  return await Diary.getDiaries({ userId, dateRange });
+async function handleFetchDiaries({ userId, ...query}) {
+  return await Diary.getDiaries({ userId, ...query });
 }
 
 async function handleFetchDiary(query) {

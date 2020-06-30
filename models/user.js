@@ -21,7 +21,7 @@ function deleteUser(params) {
 }
 
 function findUser(query) {
-  return User.find(query, (err, user) => {
+  return User.findOne(query, (err, user) => {
     return new Promise(resolve => resolve(user));
   });
 }

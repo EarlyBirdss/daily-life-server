@@ -18,7 +18,14 @@ router.post('/login', (req, res) => {
   User.handleFindUser({ userName })
     .then(data => {
       if (data && data.password === password) {
-        res.send(handleRespondData({ userName }));
+        req.session.regenerate(err => {
+          if (err) {
+            res.send(handleRespondData(null, false, '登录失败'));
+          }
+          req.session.user = data;
+          console.log('session', req.session.user)
+          res.send(handleRespondData({ userName }));
+        });
       } else {
         res.send(handleRespondData(null, false, '用户名或密码错误'));
       }
@@ -26,7 +33,14 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/loginOut', (req, res) => {
+  console.log(req.session.user);
+  req.session.destroy(err => {
+    if (err) {
+      res.send(handleRespondData(null, false, '退出登录失败'));
+    }
 
+    res.send(handleRespondData({ userName }));
+  });
 });
 
 router.post('/register', async (req, res) => {

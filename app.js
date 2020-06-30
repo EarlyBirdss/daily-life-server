@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-const favicon = require('serve-favicon');
+// const path = require('path');
+// const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const config = require('./config');
 const diary = require('./routes/diary');
@@ -20,6 +21,16 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+  secret: 'LITTLE_CABIN',
+  saveUninitialized: true,
+  resave: false,
+  cookie: {
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  }
+}));
 
 app.use('/diary', diary);
 app.use('/user', user);

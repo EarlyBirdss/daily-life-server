@@ -4,11 +4,16 @@ const lodash = require('lodash');
 
 const Diary = mongoose.model('Diary', DiarySchema);
 
-function getDiaries({ userId, dateRange }) {
+function getDiaries({ userId, dateRange, dayIndexRange }) {
   let query = { userId };
   if (lodash.isArray(dateRange)) {
     const dateQuery = {date: { $gte: dateRange[0], $lte: dateRange[1] }};
     query = {...query, ...dateQuery};
+  }
+
+  if (lodash.isArray(dayIndexRange)) {
+    const dayIndexQuert = {dayIndex: { $gte: dayIndexRange[0], $lte: dayIndexRange[1] }};
+    query = {...query, ...dayIndexQuert};
   }
 
   return Diary.find(query, (err, diaries) => {

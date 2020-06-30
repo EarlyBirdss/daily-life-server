@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const DiaryLogSchema = new Schema({
   id: Schema.Types.ObjectId,
-  userId: Number,
+  userId: String,
   diaryId: String,
   modifyAt: Date,
   remark: { type: String, default: '', trim: true, maxlength: 400 },

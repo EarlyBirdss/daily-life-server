@@ -10,7 +10,8 @@ const { ControllerType } = require('../constant');
 const router = express.Router();
 
 router.get('/fetchDiaryList', (req, res) => {
-  let { modules = "[]", childModules = "[]", dateRange } = req.query;
+  let { modules = "[]", childModules = "[]", dateRange, dayIndexMin, dayIndexMax } = req.query;
+  const dayIndexRange = [dayIndexMin, dayIndexMax];
   modules = modules ? JSON.parse(modules) : [];
   childModules = childModules ? JSON.parse(childModules) : [];
   const children = childModules.map(({ key, label }) => {
@@ -24,8 +25,9 @@ router.get('/fetchDiaryList', (req, res) => {
     }
   });
   const parents = modules.filter(({ key }) => !children.find(({ parentId }) => parentId === key));
-
-  Diary.handleFetchDiaries({ userId, dateRange })
+  console.log(req.session);
+  console.log(req.session.user)
+  Diary.handleFetchDiaries({ userId, dateRange, dayIndexRange })
     .then(data => {
       const result = {
         list: data,

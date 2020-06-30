@@ -3,9 +3,10 @@ const { Schema } = mongoose;
 
 const DiarySchema = new Schema({
   id: Schema.Types.ObjectId,
-  userId: Number,
+  userId: String,
   sortId: Number,
   date: { type: Date, required: true },
+  dayIndex: Number,
   createAt: Date,
   modifyAt: Date,
   grade: { type: Number, min: 0, max: 100 },

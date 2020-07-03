@@ -23,8 +23,7 @@ router.post('/login', (req, res) => {
             res.send(handleRespondData(null, false, '登录失败'));
           }
           req.session.user = data;
-          console.log('session', req.session.user)
-          res.send(handleRespondData({ userName }));
+          res.send(handleRespondData({ userName: data.userName, userId: data.userId }));
         });
       } else {
         res.send(handleRespondData(null, false, '用户名或密码错误'));
@@ -33,7 +32,6 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/loginOut', (req, res) => {
-  console.log(req.session.user);
   req.session.destroy(err => {
     if (err) {
       res.send(handleRespondData(null, false, '退出登录失败'));

@@ -3,14 +3,13 @@ const Module = require('../controller/module');
 const Diary = require('../controller/diary');
 const Template = require('../controller/template');
 const DiaryLog = require('../controller/diaryLog');
-const { userId } = require('../config');
 const { handleRespondData } = require('../utils');
 const { ControllerType } = require('../constant');
 
 const router = express.Router();
 
 router.get('/fetchDiaryList', (req, res) => {
-  let { modules = "[]", childModules = "[]", dateRange, dayIndexMin, dayIndexMax } = req.query;
+  let { modules = "[]", childModules = "[]", dateRange, dayIndexMin, dayIndexMax, userId } = req.query;
   const dayIndexRange = [dayIndexMin, dayIndexMax];
   modules = modules ? JSON.parse(modules) : [];
   childModules = childModules ? JSON.parse(childModules) : [];
@@ -25,8 +24,7 @@ router.get('/fetchDiaryList', (req, res) => {
     }
   });
   const parents = modules.filter(({ key }) => !children.find(({ parentId }) => parentId === key));
-  console.log(req.session);
-  console.log(req.session.user)
+
   Diary.handleFetchDiaries({ userId, dateRange, dayIndexRange })
     .then(data => {
       const result = {
@@ -47,7 +45,7 @@ router.get('/fetchDiary', (req, res) => {
 });
 
 router.post('/saveDiary', (req, res) => {
-  const { remark, ...content } = req.body;
+  const { remark, userId, ...content } = req.body;
   Diary.hanleSubmitDiary({ userId, ...content })
     .then(data => {
       if (remark !== undefined && remark !== null) {
@@ -83,6 +81,7 @@ router.delete('/deleteDiary', (req, res) => {
 });
 
 router.get('/fetchModuleList', (req, res) => {
+  const { userId } = req.query;
   Module.handleFetchModule({ userId }, ['_id', 'name'])
     .then(data => {
       res.send(handleRespondData(data));
@@ -90,6 +89,8 @@ router.get('/fetchModuleList', (req, res) => {
 });
 
 router.get('/fetchTodoList', (req, res, next) => {
+  const { userId } = req.query;
+
   Module.handleFetchTodoList({ userId }, ['_id', 'name'])
     .then(data => {
       res.send(handleRespondData(data));
@@ -105,6 +106,7 @@ router.get('/fetchLogList', (req, res) => {
 });
 
 router.get('/fetchModule', (req, res) => {
+  const { userId } = req.query;
   Module.handleFetchModule({ userId })
     .then(data => {
       res.send(handleRespondData(data));
@@ -153,6 +155,7 @@ router.delete('/deleteModule', (req, res, next) => {
 });
 
 router.get('/fetchTemplateList', (req, res) => {
+  const { userId } = req.query;
   Template.handleFetchTemplateList({ userId })
     .then(data => {
       res.send(handleRespondData(data));
@@ -177,7 +180,7 @@ router.get('/fetchTemplateBasicDetail', (req, res) => {
 });
 
 router.post('/saveTemplate', (req, res) => {
-  const params = req.body;
+  const { userId, ...params } = req.body;
   Template.handleSaveTemplateDetail({ ...params, userId })
     .then(data => {
       res.send(handleRespondData(data));
@@ -185,7 +188,7 @@ router.post('/saveTemplate', (req, res) => {
 });
 
 router.post('/saveTemplateBasicDetail', (req, res) => {
-  const params = req.body;
+  const { userId, ...params } = req.body;
   Template.handleSaveTemplateDetail({ ...params, userId })
     .then(data => {
       res.send(handleRespondData(data));
